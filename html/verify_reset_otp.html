@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Reset OTP</title>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: url("../backimg/formimg.jpg") no-repeat center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        .form_verifyresetotp {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 30px 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form_close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            color: #fff;
+            background: #ff0000;
+            border: 2px solid #7c7c7c;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 2px 7px;
+            transition: transform 0.2s ease;
+        }
+
+        .form_close:hover {
+            transform: rotate(90deg);
+            background: #00ff33;
+        }
+
+        .form_verifyresetotp h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+
+        #otpTimer {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0dff00;
+            font-weight: bold;
+        }
+
+        .input_box {
+            margin-bottom: 13px;
+            position: relative;
+        }
+
+        .input_box input {
+            width: 100%;
+            padding: 12px 40px 12px 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            transition: 0.3s;
+        }
+
+        .input_box input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .input_box input:focus {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        .input_box input.valid {
+            box-shadow: 0 0 0 2px #22c55e;
+        }
+
+        .input_box input.invalid {
+            box-shadow: 0 0 0 2px #ef4444;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .button {
+            width: 100%;
+            background: linear-gradient(135deg, #ff0077, #3b82f6);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+            margin-top: 15px;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .button:disabled {
+            background: linear-gradient(135deg, #ff0077, #3b82f6);
+            color: #fff;
+            cursor: not-allowed;
+        }
+
+        /* ✅ Popup Box */
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .popup-content p {
+            margin-bottom: 15px;
+        }
+
+        .close-popup {
+            background: #2a2ae8;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form_verifyresetotp">
+        <i class="uil uil-times form_close" id="formClose"></i>
+        <form id="verifyResetOtpForm">
+            <h2>Reset Verify OTP</h2>
+            <div id="otpTimer"></div>
+            <div class="input_box">
+                <input type="text" id="otp" name="otp" placeholder="Enter OTP" maxlength="6" required
+                    inputmode="numeric" />
+                <div class="error" id="otpError">Enter a valid 6-digit OTP</div>
+            </div>
+            <button class="button" type="submit">Verify</button>
+            <button type="button" id="resendBtn" class="button" disabled>Resend OTP</button>
+        </form>
+    </div>
+
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p id="popupMessage"></p>
+            <button class="close-popup" id="closePopup">OK</button>
+        </div>
+    </div>
+    <!-- jQuery + Ripples -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
+    <script>
+        const otpInput = document.getElementById("otp");
+        const otpError = document.getElementById("otpError");
+        const form = document.getElementById("verifyResetOtpForm");
+        const resendBtn = document.getElementById("resendBtn");
+        const otpTimer = document.getElementById("otpTimer");
+        const popup = document.getElementById("popup");
+        const popupMsg = document.getElementById("popupMessage");
+        const closePopup = document.getElementById("closePopup");
+        const verifyBtn = form.querySelector("button[type='submit']");
+        const userEmail = localStorage.getItem("userEmail") || "";
+        let timerInterval;
+
+        // ✅ Real-time OTP validation
+        otpInput.addEventListener("input", () => {
+            const otp = otpInput.value.trim();
+            if (!otp) {
+                otpInput.classList.remove("valid", "invalid");
+                otpError.style.display = "none";
+                return;
+            }
+            if (/^\d{6}$/.test(otp)) {
+                otpInput.classList.add("valid");
+                otpInput.classList.remove("invalid");
+                otpError.style.display = "none";
+            } else {
+                otpInput.classList.add("invalid");
+                otpInput.classList.remove("valid");
+                otpError.style.display = "block";
+            }
+        });
+
+        // ✅ Popup function with optional auto-close + redirect
+        function showPopup(msg, isSuccess = true, redirect = null, email = null, autoClose = true) {
+            if (email) {
+                popupMsg.innerHTML = `<strong>${msg}</strong><br/>Sent to: <span style="color:#2a2ae8">${email}</span>`;
+            } else {
+                popupMsg.textContent = msg;
+            }
+            popupMsg.style.color = isSuccess ? "green" : "red";
+            popup.style.display = "flex";
+
+            closePopup.onclick = () => {
+                popup.style.display = "none";
+                if (redirect) window.location.href = redirect;
+            };
+
+            if (isSuccess && redirect && autoClose) {
+                setTimeout(() => {
+                    popup.style.display = "none";
+                    window.location.href = redirect;
+                }, 2500);
+            }
+        }
+
+        // ✅ Disable resend button visually
+        function updateResendButton(disabled) {
+            resendBtn.disabled = disabled;
+            resendBtn.style.opacity = disabled ? 0.5 : 1;
+        }
+
+        // ✅ Start timer
+        function startTimer(duration) {
+            clearInterval(timerInterval);
+            let timeLeft = duration;
+            const endTime = Date.now() + timeLeft * 1000;
+            localStorage.setItem("otpEndTime", endTime);
+
+            updateDisplay(timeLeft);
+            updateResendButton(true);
+
+            timerInterval = setInterval(() => {
+                const remaining = Math.floor((endTime - Date.now()) / 1000);
+                if (remaining > 0) {
+                    updateDisplay(remaining);
+                } else {
+                    clearInterval(timerInterval);
+                    otpTimer.textContent = "You can now resend OTP.";
+                    updateResendButton(false);
+                    localStorage.removeItem("otpEndTime");
+                }
+            }, 1000);
+        }
+
+        function updateDisplay(seconds) {
+            const min = String(Math.floor(seconds / 60)).padStart(2, "0");
+            const sec = String(seconds % 60).padStart(2, "0");
+            otpTimer.textContent = `Time remaining: ${min}:${sec}s`;
+        }
+
+        // ✅ Restore timer on reload
+        window.addEventListener("load", () => {
+            const savedEnd = localStorage.getItem("otpEndTime");
+            if (savedEnd) {
+                const remaining = Math.floor((savedEnd - Date.now()) / 1000);
+                if (remaining > 0) startTimer(remaining);
+                else updateResendButton(false);
+            } else startTimer(120);
+        });
+
+        // ✅ Verify OTP
+        form.addEventListener("submit", async e => {
+            e.preventDefault();
+            const otp = otpInput.value.trim();
+            if (!/^\d{6}$/.test(otp)) {
+                otpInput.classList.add("invalid");
+                otpError.style.display = "block";
+                return;
+            }
+
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = "Verifying...";
+
+            try {
+                const res = await fetch("../php/verify_reset-otp.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `email=${encodeURIComponent(userEmail)}&otp=${encodeURIComponent(otp)}`
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    localStorage.removeItem("otpEndTime");
+                    localStorage.removeItem("userEmail");
+                    showPopup(data.message || "OTP verified successfully", true, "reset_password.html", userEmail);
+                } else {
+                    showPopup(data.message || "Invalid OTP", false, null, userEmail, false);
+                    otpInput.classList.remove("valid");
+                    otpInput.classList.add("invalid");
+                    otpInput.value = "";
+                    otpInput.focus();
+                }
+            } catch (err) {
+                console.error(err);
+                showPopup("Something went wrong. Try again.", false, null, userEmail, false);
+            } finally {
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = "Verify";
+            }
+        });
+
+        // ✅ Resend OTP
+        resendBtn.addEventListener("click", async () => {
+            startTimer(120);
+            try {
+                const res = await fetch("../php/resend_reset_otp.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `email=${encodeURIComponent(userEmail)}`
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showPopup(data.message || "OTP resent successfully", true, null, data.email, false);
+                } else {
+                    showPopup(data.message || "Failed to resend OTP", false, null, userEmail, false);
+                }
+            } catch (err) {
+                console.error(err);
+                showPopup("Failed to resend OTP", false, null, userEmail, false);
+            }
+        });
+
+        // Water ripple effect on background
+        $("body").ripples({
+            resolution: 512,
+            dropRadius: 20,
+            perturbance: 0.04,
+        });
+
+        $("body").on("click", function (e) {
+            const $el = $(this);
+            const x = e.pageX - $el.offset().left;
+            const y = e.pageY - $el.offset().top;
+            $el.ripples("drop", x, y, 20, 0.04);
+        });
+
+        // ✅ Close form
+        document.getElementById("formClose").onclick = () => {
+            localStorage.removeItem("otpEndTime");
+            localStorage.removeItem("userEmail");
+            window.location.href = "../index.html";
+        };
+
+    </script>
+</body>
+</html>

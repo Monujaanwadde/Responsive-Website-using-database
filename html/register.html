@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Form</title>
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: url("../backimg/formimg.jpg") no-repeat center/cover;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    .form_register {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      padding: 30px 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form_close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      color: #fff;
+      background: #ff0000;
+      border: 2px solid #7c7c7c;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 2px 7px;
+      transition: transform 0.2s ease;
+    }
+
+    .form_close:hover {
+      transform: rotate(90deg);
+      background: #00ff33;
+    }
+
+    .form_register h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 600;
+      font-size: 22px;
+      letter-spacing: 0.5px;
+    }
+
+    .input_box {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .input_box input {
+      width: 100%;
+      padding: 12px 40px 12px 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    .input_box input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .input_box input:focus {
+      background: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 0 2px #3b82f6;
+    }
+
+    .input_box input.valid {
+      box-shadow: 0 0 0 2px #22c55e;
+    }
+
+    .input_box input.invalid {
+      box-shadow: 0 0 0 2px #ef4444;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 35px;
+    }
+
+    .password-wrapper .pw_hide {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: #ffffff;
+    }
+
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .form_register .button {
+      width: 100%;
+      background: linear-gradient(135deg, #ff0077, #3b82f6);
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    .form_register .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .register_link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+
+    .register_link a {
+      color: #7d2ae8;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .register_link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width:420px) {
+      .form_register {
+        max-width: 100%;
+        margin: 0 15px;
+        padding: 15px;
+        border-radius: 10px;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      .input_box {
+        margin-bottom: 15px;
+      }
+
+      .input_box input {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+
+      .form_register .button {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .form_close {
+        top: 6px;
+        right: 6px;
+        font-size: 16px;
+        padding: 1px 5px;
+      }
+
+      .register_link {
+        font-size: 12px;
+        margin-top: 10px;
+      }
+    }
+
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .popup-content {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 350px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      animation: popupFade 0.3s ease;
+    }
+
+    .popup-content p {
+      margin-bottom: 15px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+      word-break: break-word;
+    }
+
+    .popup-content button {
+      padding: 8px 20px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .popup-content button:hover {
+      background: #45a049;
+    }
+
+    @keyframes popupFade {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="form_register">
+    <i class="uil uil-times form_close" id="formClose"></i>
+    <form id="registerForm">
+      <h2>Registration</h2>
+
+      <div class="input_box">
+        <input type="text" id="name" name="name" placeholder="Enter your name" required />
+        <div class="error" id="nameError">Name must be at least 3 letters</div>
+      </div>
+
+      <div class="input_box">
+        <input type="email" id="email" name="email" placeholder="Enter your email" required />
+        <div class="error" id="emailError">Enter a valid email</div>
+      </div>
+
+      <div class="input_box">
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" placeholder="Create password" required />
+          <i class="uil uil-eye-slash pw_hide"></i>
+        </div>
+        <div class="error" id="passError">Password must be 8+ chars with A-Z, a-z, number & symbol</div>
+      </div>
+
+      <div class="input_box">
+        <div class="password-wrapper">
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required />
+          <i class="uil uil-eye-slash pw_hide"></i>
+        </div>
+        <div class="error" id="confirmError">Passwords must match</div>
+      </div>
+
+      <button type="submit" class="button">Signup Now</button>
+
+      <div class="register_link">
+        Already have an account? <a href="login.html">Login</a>
+      </div>
+    </form>
+  </div>
+
+  <div id="popupBox" class="popup-overlay">
+    <div class="popup-content">
+      <p id="popupMessage"></p>
+      <button id="popupClose">OK</button>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("registerForm");
+      const popup = document.getElementById("popupBox");
+      const popupMsg = document.getElementById("popupMessage");
+      const popupClose = document.getElementById("popupClose");
+
+      const name = document.getElementById("name");
+      const email = document.getElementById("email");
+      const password = document.getElementById("password");
+      const confirmPassword = document.getElementById("confirmPassword");
+      const formClose = document.getElementById("formClose");
+
+      const validators = {
+        name: v => /^[A-Za-z\s]{3,}$/.test(v),
+        email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+        password: v => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/.test(v),
+        confirmPassword: v => v === password.value
+      };
+
+      const touched = { password: false, confirmPassword: false };
+
+      function resetOrValidate(el, validator, errorEl) {
+        el.addEventListener("input", e => {
+          const val = e.target.value.trim();
+          if (val.length === 0) {
+            e.target.classList.remove("valid", "invalid");
+            errorEl.style.display = "none";
+            return;
+          }
+          const valid = validator(val);
+          e.target.classList.toggle("valid", valid);
+          e.target.classList.toggle("invalid", !valid);
+          errorEl.style.display = valid ? "none" : "block";
+        });
+      }
+
+      resetOrValidate(name, validators.name, document.getElementById("nameError"));
+      resetOrValidate(email, validators.email, document.getElementById("emailError"));
+
+      function validatePassword() {
+        const val = password.value.trim();
+        const err = document.getElementById("passError");
+        if (val.length === 0) {
+          password.classList.remove("valid", "invalid");
+          err.style.display = "none";
+          return false;
+        }
+        const valid = validators.password(val);
+        password.classList.toggle("valid", valid);
+        password.classList.toggle("invalid", !valid);
+        err.style.display = valid ? "none" : "block";
+        if (confirmPassword.value) validateConfirmPassword();
+        return valid;
+      }
+
+      function validateConfirmPassword() {
+        const val = confirmPassword.value.trim();
+        const err = document.getElementById("confirmError");
+        if (val.length === 0) {
+          confirmPassword.classList.remove("valid", "invalid");
+          err.style.display = "none";
+          return false;
+        }
+        const valid = validators.confirmPassword(val);
+        confirmPassword.classList.toggle("valid", valid);
+        confirmPassword.classList.toggle("invalid", !valid);
+        err.style.display = valid ? "none" : "block";
+        return valid;
+      }
+
+      password.addEventListener("input", validatePassword);
+      password.addEventListener("blur", () => { touched.password = true; validatePassword(); });
+      confirmPassword.addEventListener("input", validateConfirmPassword);
+      confirmPassword.addEventListener("blur", () => { touched.confirmPassword = true; validateConfirmPassword(); });
+
+      document.querySelectorAll(".pw_hide").forEach(icon => {
+        icon.addEventListener("click", () => {
+          const input = icon.previousElementSibling;
+          input.type = input.type === "password" ? "text" : "password";
+          icon.classList.toggle("uil-eye");
+          icon.classList.toggle("uil-eye-slash");
+        });
+      });
+
+      formClose.addEventListener("click", () => window.location.href = "../index.html");
+
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        touched.password = touched.confirmPassword = true;
+        const nameValid = validators.name(name.value.trim());
+        const emailValid = validators.email(email.value.trim());
+        const passValid = validatePassword();
+        const confValid = validateConfirmPassword();
+
+        if (!nameValid) { document.getElementById("nameError").style.display = "block"; name.classList.add("invalid"); }
+        if (!emailValid) { document.getElementById("emailError").style.display = "block"; email.classList.add("invalid"); }
+        if (!nameValid || !emailValid || !passValid || !confValid) return;
+
+        const formData = new FormData(form);
+        const btn = form.querySelector("button");
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "Processing...";
+
+        try {
+          const res = await fetch("../php/register.php", { method: "POST", body: formData });
+          const data = await res.json();
+          popupMsg.innerText = data.status === "success"
+            ? `${data.message} to: ${formData.get("email")}`
+            : data.message;
+          popup.style.display = "flex";
+
+          popupClose.onclick = () => {
+            popup.style.display = "none";
+            if (data.status === "success") {
+              localStorage.setItem("userEmail", formData.get("email"));
+              const obj = {};
+              formData.forEach((v, k) => obj[k] = v);
+              localStorage.setItem("pendingRegistration", JSON.stringify(obj));
+              localStorage.setItem("otpEndTime", Date.now() + 120000);
+              window.location.href = "verify_otp.html";
+            } else {
+              btn.disabled = false;
+              btn.textContent = originalText;
+            }
+          };
+        } catch {
+          popupMsg.innerText = "Failed to send OTP. Please try again.";
+          popup.style.display = "flex";
+          popupClose.onclick = () => {
+            popup.style.display = "none";
+            btn.disabled = false;
+            btn.textContent = originalText;
+          };
+        }
+      });
+    });
+
+    // Water ripple effect
+    $("body").ripples({
+      resolution: 512,
+      dropRadius: 20,
+      perturbance: 0.04,
+    });
+
+    $("body").on("click", function (e) {
+      const $el = $(this);
+      const x = e.pageX - $el.offset().left;
+      const y = e.pageY - $el.offset().top;
+      $el.ripples("drop", x, y, 20, 0.04);
+    });
+  </script>
+</body>
+</html>

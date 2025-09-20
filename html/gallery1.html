@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Memorial Photo Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --accent: #ff3b30;
+            --accent-light: #ff6b60;
+            --bg: #f8f9fb;
+            --card-bg: #fff;
+            --text: #333;
+            --text-light: #666;
+            --shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 10px 24px rgba(0, 0, 0, 0.1);
+            --border: #eee;
+            --transition: all 0.3s ease;
+            --btn-height: 36px;
+            --btn-min-width: 100px;
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            background-image: linear-gradient(to right, #434343 0%, black 100%);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            text-align: center;
+            padding: 1.5rem 0 1.2rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+        }
+
+        header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        header h2 {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin: 4px 0 0;
+            height: 20px;
+        }
+
+        main {
+            padding-top: 150px;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            max-width: 1200px;
+            margin: 0 auto 30px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            height: var(--btn-height);
+            min-width: var(--btn-min-width);
+            border-radius: 50px;
+            border: none;
+            background: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1.2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+        }
+
+        /* Dark mode toggle */
+        .theme-toggle {
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle i {
+            position: absolute;
+            top: 3px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle i.sun {
+            left: 3px;
+        }
+
+        .theme-toggle i.moon {
+            right: 3px;
+            opacity: 0;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: var(--accent);
+        }
+
+        body.dark-mode .theme-toggle i.sun {
+            transform: translateX(30px);
+            opacity: 0;
+        }
+
+        body.dark-mode .theme-toggle i.moon {
+            opacity: 1;
+        }
+
+        /* Gallery grid */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 40px;
+            padding: 40px 30px;
+            max-width: 1300px;
+            margin: auto;
+        }
+
+        /* Gallery card */
+        .gallery-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .gallery-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        /* Image fully visible */
+        .gallery-card img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        /* Info / buttons below image */
+        .info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            gap: 10px;
+            flex-wrap: nowrap;
+            overflow: hidden;
+        }
+
+        /* Buttons */
+        .download-btn {
+            height: var(--btn-height);
+            width: var(--btn-height);
+            min-width: var(--btn-height);
+            border-radius: 50%;
+            background: var(--card-bg);
+            color: var(--accent);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            padding: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            flex-shrink: 0;
+        }
+
+        .like-button,
+        .view-btn {
+            height: var(--btn-height);
+            min-width: var(--btn-min-width);
+            border-radius: 50px;
+            background: var(--card-bg);
+            color: var(--accent);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            padding: 0 1rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            flex: 1 1 auto;
+        }
+
+        .download-btn:hover {
+            background: rgba(234, 23, 12, 0.159);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .like-button:hover {
+            background: rgba(200, 200, 200, 0.886);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .like-button.liked {
+            color: white;
+            background: var(--accent);
+            box-shadow: 0 4px 8px rgba(255, 59, 48, 0.3);
+        }
+
+        .view-btn {
+            border: none;
+        }
+
+        .download-btn span {
+            display: none;
+        }
+
+        .download-btn i {
+            font-size: 1rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, .92);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-inner {
+            width: calc(100% - 40px);
+            max-width: 1100px;
+            max-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            animation: zoomIn .4s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(.85);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .modal-content {
+            width: 100%;
+            max-height: calc(100vh - 180px);
+            object-fit: contain;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+            background: #fff;
+        }
+
+        .controls {
+            display: flex;
+            gap: 13px;
+            align-items: center;
+            color: #fff;
+            font-size: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .controls button,
+        .controls a,
+        .controls span {
+            height: var(--btn-height);
+            min-width: var(--btn-min-width);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--accent);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            padding: 0 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Make like and view buttons smaller in modal */
+        #modalLike,
+        #modalLikeMobile,
+        .controls span {
+            height: 32px;
+            min-width: 60px;
+            padding: 0 0.6rem;
+            font-size: 0.85rem;
+        }
+
+        .controls button i,
+        .controls a i {
+            font-size: 1rem;
+        }
+
+        /* Flying hearts */
+        .flying-heart {
+            position: fixed;
+            animation: fly 1s ease-out forwards;
+            font-size: 22px;
+            pointer-events: none;
+            z-index: 2000;
+        }
+
+        @keyframes fly {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-80px) translateX(var(--drift-x, 0px)) scale(1.6);
+            }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            z-index: 3000;
+            animation: fadeInUp 0.3s ease;
+            font-weight: 500;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        @keyframes fadeOutDown {
+            from {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translate(-50%, 20px);
+            }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            background: var(--card-bg);
+            font-size: .9rem;
+            color: var(--text-light);
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            --bg: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text: #f0f0f0;
+            --text-light: #aaa;
+            --shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 10px 24px rgba(0, 0, 0, 0.5);
+            --border: #444;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            :root {
+                --btn-height: 32px;
+                --btn-min-width: 80px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+                padding: 10px 5px;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .info {
+                padding: 12px;
+                gap: 8px;
+            }
+
+            .actions {
+                gap: 10px;
+            }
+
+            /* Modal controls mobile layout */
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .controls-row {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .controls-row button,
+            .controls-row a,
+            .controls-row span {
+                flex: 1;
+                min-width: auto;
+            }
+
+            #modalLike,
+            #modalLikeMobile,
+            .controls span {
+                height: 30px;
+                min-width: 50px;
+                padding: 0 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+                padding: 15px 10px;
+            }
+
+            .gallery-card img {
+                height: 120px;
+            }
+
+            .info,
+            .actions {
+                gap: 5px;
+                font-size: 0.8rem;
+            }
+
+            .download-btn {
+                flex: 0 0 auto;
+                min-width: unset;
+                padding: 0;
+            }
+
+            .like-button,
+            .view-btn {
+                flex: 1 1 auto;
+                min-width: unset;
+                padding: 0 0.1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Memorial Gallery</h1>
+        <h2 class="typing"></h2>
+    </header>
+    <main>
+        <div class="filter-bar">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Images</button>
+                <button class="filter-btn" data-filter="liked">Liked Only</button>
+            </div>
+        </div>
+        <div id="galleryContainer" class="gallery"></div>
+    </main>
+    <div id="imageModal" class="modal" aria-hidden="true">
+        <div class="modal-inner">
+            <img id="modalImg" class="modal-content" alt="" />
+            <div class="controls">
+                <a id="modalDownload" href="#" download title="Download"><i class="fas fa-download"></i></a>
+                <button id="modalLike" class="like-button" data-id=""><i class="fas fa-heart"></i> <span
+                        id="modalLikeCount">0</span></button>
+                <span><i class="fas fa-eye"></i> <span id="modalViewCount">0</span></span>
+                <button id="prevBtn"><i class="fas fa-chevron-left"></i> Previous</button>
+                <button id="nextBtn"><i class="fas fa-chevron-right"></i> Next</button>
+                <button id="closeBtn"><i class="fas fa-times"></i> Close</button>
+                <div class="controls-row">
+                    <a id="modalDownloadMobile" href="#" download title="Download"><i class="fas fa-download"></i></a>
+                    <button id="modalLikeMobile" class="like-button" data-id=""><i class="fas fa-heart"></i> <span
+                            id="modalLikeCountMobile">0</span></button>
+                    <span><i class="fas fa-eye"></i> <span id="modalViewCountMobile">0</span></span>
+                </div>
+                <div class="controls-row">
+                    <button id="prevBtnMobile"><i class="fas fa-chevron-left"></i> Previous</button>
+                    <button id="nextBtnMobile"><i class="fas fa-chevron-right"></i> Next</button>
+                    <button id="closeBtnMobile"><i class="fas fa-times"></i> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>© <span id="year"></span> Memorial Gallery. All rights reserved.</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script>
+        // Generate gallery data with online images
+        const galleryData = Array.from({ length: 46 }, (_, i) => {
+            const id = i + 1;
+            // Generate a date: starting from 2023-10-06 and going backwards
+            const startDate = new Date('2023-10-06');
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() - i);
+            const formattedDate = date.toISOString().split('T')[0];
+
+            // Use Picsum for online images with consistent seeds
+            return {
+                id,
+                src: `https://picsum.photos/seed/memorial${id}/800/600.jpg`,
+                alt: `IMG-${id}`,
+                date: formattedDate
+            };
+        });
+
+        const stats = {};
+        const galleryContainer = document.getElementById("galleryContainer");
+        const imageModal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImg");
+        const modalDownload = document.getElementById("modalDownload");
+        const modalLikeButton = document.getElementById("modalLike");
+        const modalLikeCount = document.getElementById("modalLikeCount");
+        const modalViewCount = document.getElementById("modalViewCount");
+        const closeBtn = document.getElementById("closeBtn");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const themeToggle = document.getElementById("themeToggle");
+        const modalDownloadMobile = document.getElementById("modalDownloadMobile");
+        const modalLikeButtonMobile = document.getElementById("modalLikeMobile");
+        const modalLikeCountMobile = document.getElementById("modalLikeCountMobile");
+        const modalViewCountMobile = document.getElementById("modalViewCountMobile");
+        const closeBtnMobile = document.getElementById("closeBtnMobile");
+        const prevBtnMobile = document.getElementById("prevBtnMobile");
+        const nextBtnMobile = document.getElementById("nextBtnMobile");
+        const controlsRows = document.querySelectorAll('.controls-row');
+        let currentIndex = 0;
+        let currentFilter = 'all';
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                currentFilter = button.dataset.filter;
+                filterGallery();
+            });
+        });
+        
+        function filterGallery() {
+            const cards = document.querySelectorAll('.gallery-card');
+            if (cards.length === 0) return;
+            cards.forEach(card => {
+                const id = parseInt(card.querySelector('img').dataset.id);
+                const imageData = galleryData.find(img => img.id === id);
+                if (!imageData) return;
+                let matchesFilter = true;
+                if (currentFilter === 'liked') {
+                    const stat = stats[id];
+                    matchesFilter = stat && stat.liked;
+                }
+                if (matchesFilter) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        function renderSkeletons(count) {
+            galleryContainer.innerHTML = "";
+            for (let i = 0; i < count; i++) {
+                const card = document.createElement("div");
+                card.className = "skeleton-card";
+                const image = document.createElement("div");
+                image.className = "skeleton skeleton-img";
+                const info = document.createElement("div");
+                info.className = "skeleton-info";
+                const btn1 = document.createElement("div");
+                btn1.className = "skeleton skeleton-btn";
+                const btn2 = document.createElement("div");
+                btn2.className = "skeleton skeleton-btn";
+                const btn3 = document.createElement("div");
+                btn3.className = "skeleton skeleton-btn";
+                info.appendChild(btn1);
+                info.appendChild(btn2);
+                info.appendChild(btn3);
+                card.appendChild(image);
+                card.appendChild(info);
+                galleryContainer.appendChild(card);
+            }
+        }
+        
+        function renderGallery() {
+            galleryContainer.innerHTML = "";
+            galleryData.forEach((img, index) => {
+                const card = document.createElement("div");
+                card.className = "gallery-card";
+                card.style.animationDelay = `${index * 0.1}s`;
+                const image = document.createElement("img");
+                image.src = img.src;
+                image.alt = img.alt;
+                image.dataset.id = img.id;
+                image.addEventListener("click", () => openModal(img.id));
+                const info = document.createElement("div");
+                info.className = "info";
+                const downloadLink = document.createElement("a");
+                downloadLink.className = "download-btn";
+                downloadLink.href = img.src;
+                downloadLink.download = img.alt;
+                downloadLink.title = "Download";
+                downloadLink.innerHTML = '<i class="fas fa-download"></i>';
+                const likeBtn = document.createElement("button");
+                likeBtn.className = "like-button";
+                likeBtn.dataset.id = img.id;
+                likeBtn.id = `like-btn-${img.id}`;
+                likeBtn.innerHTML = `<i class="fas fa-heart"></i> <span id="like-count-${img.id}">0</span>`;
+                likeBtn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    toggleLike(img.id);
+                    createFlyingHeart(e.clientX, e.clientY);
+                });
+                const viewSpan = document.createElement("span");
+                viewSpan.className = "view-btn";
+                viewSpan.innerHTML = `<i class="fas fa-eye"></i> <span id="view-count-${img.id}">0</span>`;
+                info.appendChild(downloadLink);
+                info.appendChild(likeBtn);
+                info.appendChild(viewSpan);
+                card.appendChild(image);
+                card.appendChild(info);
+                galleryContainer.appendChild(card);
+            });
+        }
+        
+        function applyStats(id, s) {
+            if (!s) return;
+            // Update gallery elements
+            const likeSpan = document.getElementById(`like-count-${id}`);
+            const viewSpan = document.getElementById(`view-count-${id}`);
+            const likeBtn = document.getElementById(`like-btn-${id}`);
+            
+            if (likeSpan) likeSpan.textContent = s.like_count;
+            if (viewSpan) viewSpan.textContent = s.view_count;
+            if (likeBtn) likeBtn.classList.toggle('liked', !!s.liked);
+            
+            // Update modal elements if currently showing this image
+            const modalId = parseInt(modalLikeButton.dataset.id);
+            if (modalId === id) {
+                modalLikeCount.textContent = s.like_count;
+                modalViewCount.textContent = s.view_count;
+                modalLikeButton.classList.toggle('liked', !!s.liked);
+                modalLikeCountMobile.textContent = s.like_count;
+                modalViewCountMobile.textContent = s.view_count;
+                modalLikeButtonMobile.classList.toggle('liked', !!s.liked);
+            }
+        }
+        
+        async function loadStats() {
+            renderSkeletons(galleryData.length);
+            try {
+                const ids = galleryData.map(g => g.id);
+                const res = await fetch('../php/get_stats.php', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image_ids: ids })
+                });
+                const json = await res.json();
+                if (json.status === 'success' && json.stats) {
+                    for (const idStr of Object.keys(json.stats)) {
+                        const id = parseInt(idStr, 10);
+                        stats[id] = json.stats[idStr];
+                    }
+                    renderGallery();
+                    for (const idStr of Object.keys(json.stats)) {
+                        const id = parseInt(idStr, 10);
+                        applyStats(id, stats[id]);
+                    }
+                    filterGallery();
+                } else {
+                    renderGallery();
+                    filterGallery();
+                }
+            } catch (err) {
+                console.error('Error loading stats', err);
+                renderGallery();
+                filterGallery();
+            }
+        }
+        
+        async function toggleLike(imageId) {
+            try {
+                const res = await fetch('../php/like.php', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image_id: imageId })
+                });
+                const json = await res.json();
+                if (json.status === 'auth_required') {
+                    showNotification('Please log in to like images.');
+                    return;
+                }
+                if (json.status === 'success') {
+                    stats[imageId] = {
+                        like_count: json.like_count, 
+                        view_count: json.view_count, 
+                        liked: json.liked ? 1 : 0
+                    };
+                    applyStats(imageId, stats[imageId]);
+                    filterGallery();
+                }
+            } catch (err) { 
+                console.error('toggleLike error', err);
+                showNotification('Error updating like status. Please try again.');
+            }
+        }
+        
+        async function openModal(imageId) {
+            currentIndex = galleryData.findIndex(g => g.id === imageId);
+            if (currentIndex === -1) return;
+            const data = galleryData[currentIndex];
+            modalImg.src = data.src;
+            modalImg.alt = data.alt;
+            modalDownload.href = data.src;
+            modalDownload.download = data.alt;
+            modalLikeButton.dataset.id = data.id;
+            
+            // Get current stats or initialize if not exists
+            const currentStats = stats[imageId] || { like_count: 0, view_count: 0, liked: 0 };
+            
+            // Update modal with current stats
+            modalLikeCount.textContent = currentStats.like_count;
+            modalViewCount.textContent = currentStats.view_count;
+            modalLikeButton.classList.toggle('liked', !!currentStats.liked);
+            
+            modalDownloadMobile.href = data.src;
+            modalDownloadMobile.download = data.alt;
+            modalLikeButtonMobile.dataset.id = data.id;
+            modalLikeCountMobile.textContent = currentStats.like_count;
+            modalViewCountMobile.textContent = currentStats.view_count;
+            modalLikeButtonMobile.classList.toggle('liked', !!currentStats.liked);
+            
+            imageModal.classList.add('show');
+            
+            try {
+                // Increment view count only when modal is opened
+                const res = await fetch('../php/view.php', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image_id: imageId })
+                });
+                const json = await res.json();
+                if (json.status === 'success' || json.status === 'auth_required') {
+                    // Update stats with new view count
+                    stats[imageId] = {
+                        like_count: json.like_count, 
+                        view_count: json.view_count, 
+                        liked: json.liked ? 1 : 0
+                    };
+                    // Apply updated stats to both gallery and modal
+                    applyStats(imageId, stats[imageId]);
+                }
+            } catch (err) { 
+                console.error('Error calling view.php', err);
+            }
+        }
+        
+        function closeModal() {
+            imageModal.classList.remove('show');
+            // Reset modal data
+            modalLikeButton.dataset.id = '';
+            modalLikeButtonMobile.dataset.id = '';
+        }
+        
+        function showPrev() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                openModal(galleryData[currentIndex].id);
+            }
+        }
+        
+        function showNext() {
+            if (currentIndex < galleryData.length - 1) {
+                currentIndex++;
+                openModal(galleryData[currentIndex].id);
+            }
+        }
+        
+        function createFlyingHeart(x, y) {
+            const heart = document.createElement('span');
+            heart.className = 'flying-heart';
+            heart.textContent = '❤️';
+            heart.style.left = (x - 12) + 'px';
+            heart.style.top = (y - 12) + 'px';
+            heart.style.setProperty('--drift-x', (Math.random() * 30 - 15) + 'px');
+            document.body.appendChild(heart);
+            heart.addEventListener('animationend', () => heart.remove());
+        }
+        
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'fadeOutDown 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        modalLikeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = Number(e.currentTarget.dataset.id);
+            if (id) {
+                toggleLike(id);
+                createFlyingHeart(e.clientX, e.clientY);
+            }
+        });
+        
+        modalLikeButtonMobile.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = Number(e.currentTarget.dataset.id);
+            if (id) {
+                toggleLike(id);
+                createFlyingHeart(e.clientX, e.clientY);
+            }
+        });
+        
+        closeBtn.addEventListener('click', closeModal);
+        prevBtn.addEventListener('click', showPrev);
+        nextBtn.addEventListener('click', showNext);
+        closeBtnMobile.addEventListener('click', closeModal);
+        prevBtnMobile.addEventListener('click', showPrev);
+        nextBtnMobile.addEventListener('click', showNext);
+        
+        document.addEventListener('keydown', (e) => {
+            if (!imageModal.classList.contains('show')) return;
+            if (e.key === 'Escape') {
+                closeModal();
+            } else if (e.key === 'ArrowLeft') {
+                showPrev();
+            } else if (e.key === 'ArrowRight') {
+                showNext();
+            }
+        });
+        
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal) {
+                closeModal();
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStats();
+            new Typed('.typing', {
+                strings: ['Celebrating memories ❤️', 'A collection of moments 🌟', 'Forever cherished 📸'],
+                typeSpeed: 60,
+                backSpeed: 30,
+                backDelay: 2000,
+                loop: true
+            });
+            document.getElementById('year').textContent = new Date().getFullYear();
+            function updateControlsVisibility() {
+                if (window.innerWidth <= 768) {
+                    modalDownload.style.display = 'none';
+                    modalLikeButton.style.display = 'none';
+                    modalViewCount.parentElement.style.display = 'none';
+                    prevBtn.style.display = 'none';
+                    nextBtn.style.display = 'none';
+                    closeBtn.style.display = 'none';
+                    controlsRows.forEach(row => {
+                        row.style.display = 'flex';
+                    });
+                } else {
+                    modalDownload.style.display = 'flex';
+                    modalLikeButton.style.display = 'flex';
+                    modalViewCount.parentElement.style.display = 'flex';
+                    prevBtn.style.display = 'flex';
+                    nextBtn.style.display = 'flex';
+                    closeBtn.style.display = 'flex';
+                    controlsRows.forEach(row => {
+                        row.style.display = 'none';
+                    });
+                }
+            }
+            updateControlsVisibility();
+            window.addEventListener('resize', updateControlsVisibility);
+        });
+    </script>
+
+</body>
+
+</html>

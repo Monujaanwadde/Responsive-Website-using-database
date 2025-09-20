@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <meta name="description" content="Responsive Login Form" />
+  <meta name="keywords" content="Login, Responsive Form, HTML, CSS, JS" />
+  <meta name="author" content="Monujaan Wadde" />
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: url("../images/backimg/bol_forms.jpg") no-repeat center/cover;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form_login {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 16px;
+      padding: 30px 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form_close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      color: #fff;
+      background: #ff0000;
+      border: 2px solid #7c7c7c;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 2px 7px;
+      transition: transform 0.2s ease;
+    }
+
+    .form_close:hover {
+      transform: rotate(90deg);
+      background: #00ff33;
+    }
+
+    .form_login h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 600;
+      font-size: 22px;
+      letter-spacing: 0.5px;
+    }
+
+    .input_box {
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .input_box input {
+      width: 100%;
+      padding: 12px 40px 12px 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    .input_box input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 35px;
+    }
+
+    .password-wrapper .pw_hide {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      font-size: 18px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .option_field {
+      margin-top: 14px;
+      text-align: right;
+      font-size: 14px;
+    }
+
+    .option_field a {
+      color: #00ff15;
+      text-decoration: none;
+    }
+
+    .form_login .button {
+      width: 100%;
+      background: linear-gradient(135deg, #ff0077, #3b82f6);
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      margin-top: 10px;
+    }
+
+    .form_login .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .login_link {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 15px;
+    }
+
+    .login_link a {
+      color: #00ff11;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .popup-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      width: 320px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .popup-content p {
+      margin-bottom: 15px;
+      font-size: 15px;
+      color: #333;
+    }
+
+    .popup-content button {
+      padding: 8px 18px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .popup-content button:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="form_login">
+    <i class="uil uil-times form_close" id="formClose"></i>
+    <form id="loginForm">
+      <h2>Login</h2>
+
+      <div class="input_box">
+        <input type="text" id="email" placeholder="Enter your email" required />
+      </div>
+
+      <div class="input_box">
+        <div class="password-wrapper">
+          <input type="password" id="password" placeholder="Enter your password" required />
+          <i class="uil uil-eye pw_hide"></i>
+        </div>
+      </div>
+
+      <div class="option_field"><a href="forgot_password.html">Forgot password?</a></div>
+
+      <button class="button" type="submit">Login Now</button>
+
+      <div class="login_link">Don't have an account? <a href="register.html">Register</a></div>
+    </form>
+  </div>
+
+  <!-- Popup -->
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <p id="popupMessage"></p>
+      <button id="closePopup">OK</button>
+    </div>
+  </div>
+
+  <!-- jQuery + Ripples -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.ripples/0.5.3/jquery.ripples.min.js"></script>
+  <script>
+    const form = document.getElementById("loginForm");
+    const emailInput = document.getElementById("email");
+    const passInput = document.getElementById("password");
+
+    const popup = document.getElementById("popup");
+    const popupMessage = document.getElementById("popupMessage");
+    const closePopup = document.getElementById("closePopup");
+
+    function showPopup(msg, redirect = null) {
+      popupMessage.textContent = msg;
+      popup.style.display = "flex";
+      closePopup.onclick = () => {
+        popup.style.display = "none";
+        if (redirect) window.location.href = redirect;
+      };
+    }
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const email = emailInput.value.trim();
+      const password = passInput.value;
+
+      const btn = form.querySelector("button");
+      btn.disabled = true;
+      btn.textContent = "Logging in...";
+
+      try {
+        const res = await fetch("../php/login.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+        });
+        const data = await res.json();
+        if (data.status === "success") {
+          showPopup("Login successful! Redirecting...", "../html/home.html");
+        } else {
+          showPopup(data.message);
+        }
+      } catch (err) {
+        showPopup("Error during login. Please try again.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Login Now";
+      }
+    });
+
+    document.querySelectorAll(".pw_hide").forEach(icon => {
+      icon.addEventListener("click", () => {
+        const input = icon.previousElementSibling;
+        const isPw = input.type === "password";
+        input.type = isPw ? "text" : "password";
+        icon.classList.toggle("uil-eye-slash", !isPw);
+        icon.classList.toggle("uil-eye", isPw);
+      });
+    });
+
+    document.getElementById("formClose").onclick = () => window.location.href = "../index.html";
+
+    // Water ripple effect on background
+    $("body").ripples({
+      resolution: 512,
+      dropRadius: 20,
+      perturbance: 0.04,
+    });
+
+    $("body").on("click", function (e) {
+      const $el = $(this);
+      const x = e.pageX - $el.offset().left;
+      const y = e.pageY - $el.offset().top;
+      $el.ripples("drop", x, y, 20, 0.04);
+    });
+  </script>
+</body>
+
+</html>
