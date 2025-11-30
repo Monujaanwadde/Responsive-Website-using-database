@@ -62,13 +62,13 @@
               $mail->isSMTP();
               $mail->Host       = 'smtp.gmail.com';
               $mail->SMTPAuth   = true;
-              $mail->Username   = "godjanuwadde50@gmail.com"; 
-              $mail->Password   = "tieq jnkc xsww vplm";    
+              $mail->Username   = "your_email_address"; 
+              $mail->Password   = "email_app_password";    
               $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
               $mail->Port       = 587;
 
               // ---------- Send to User ----------
-              $mail->setFrom("godjanuwadde50@gmail.com", "My Website");
+              $mail->setFrom("your_email_address", "My Website");
               $mail->addAddress($email, $name);
               $mail->Subject = "Subscription Confirmation";
               $mail->Body    = "Hello $name,\n\nThank you for subscribing! 🎉\n\nRegards,\nMy Website Team";
@@ -76,7 +76,7 @@
 
               // ---------- Send to Admin ----------
               $mail->clearAddresses();
-              $mail->addAddress("godjanuwadde50@gmail.com", "Admin");
+              $mail->addAddress("your_email_address", "Admin");  //admin email
               $mail->Subject = "New Subscriber Alert";
               $mail->Body    = "A new subscriber joined:\n\nName: $name\nEmail: $email\n\nTotal Subscribers: $totalSubscribers";
               $mail->send();
