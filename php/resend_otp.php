@@ -26,12 +26,12 @@
         $mail->isSMTP();
         $mail->Host = "smtp.gmail.com";
         $mail->SMTPAuth = true;
-        $mail->Username = "godjanuwadde50@gmail.com";
-        $mail->Password = "tieq jnkc xsww vplm";
+        $mail->Username = "your_email_address";
+        $mail->Password = "email_app_password";
         $mail->SMTPSecure = "tls";
         $mail->Port = 587;
 
-        $mail->setFrom("godjanuwadde50@gmail.com", "OTP Verification");
+        $mail->setFrom("your_email_address", "OTP Verification");
         $mail->addAddress($_SESSION['user_data']['email']);
 
         $mail->isHTML(true);
